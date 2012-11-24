@@ -3,7 +3,7 @@ import time
 import os, sys
 #import pexpect
 from fabric.api import local, cd, run, env, sudo, require
-from gsapi.local_settings import Config
+from flask_seed.local_settings import Config
 
 fab            = Config.FABRIC['live']
 
@@ -45,10 +45,10 @@ def update_remote():
 
 # def run_tests():
 #     with cd(fab['PROJECT_ROOT']):
-#         run('export PYTHONPATH=/srv/gs/api/gsapi/:/srv/gs/api/gsapi/venv/lib/python2.7/site-packages/ && nosetests tests') 
+#         run('export PYTHONPATH=/srv/gs/api/flask_seed/:/srv/gs/api/flask_seed/venv/lib/python2.7/site-packages/ && nosetests tests') 
 
 def hello():
-    print("Hello world!")
+    print("Hello world today!")
 
 # def r():
 #     # symlink convenience
