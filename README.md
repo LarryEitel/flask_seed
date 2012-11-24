@@ -1,7 +1,7 @@
-EXAPI
+flask_seed
 ##############
 
-REST-API being built using python, flask, mongodb and pymongo.
+flask_seed being built using python, flask, mongodb and pymongo.
 
 Key Services and Tools
 ============
@@ -19,7 +19,7 @@ To make it run, you just have to do something like::
 
     cd into a python projects directory 
     git clone git@github.com:LarryEitel/flask_seed.git
-    cd gsapi
+    cd flask_seed
     virtualenv venv
 
 Create a local_settings to override for your environment
