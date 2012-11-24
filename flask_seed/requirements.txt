@@ -1,0 +1,17 @@
+Flask
+Flask-PyMongo
+Flask-Testing
+mimerender
+simplejson
+bpython
+schematics
+isodate
+jsondatetime
+rawes
+pyes
+sphinx
+pyyaml
+
+-e git+git://github.com/mongodb/mongo-python-driver.git#egg=pymongo
+fabric
+python-dateutil
