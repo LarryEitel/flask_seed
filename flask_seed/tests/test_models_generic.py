@@ -50,45 +50,46 @@ class GenericMongoTests(BaseMongoTestCase):
         from models import Email, Prs
         fNam = 'Larry'
         lNam = 'King'
+
         prs_src = {'fNam': fNam, 'lNam': lNam, 'emails': [{
             "_types" : ["Email"],
             "_cls" : "Email",
             "address" : "steve@apple.com"
         }]}
-        prs = Prs(**prs_src)
-        ret = prs.save()
-        # if it is a new record, run all v* functions that may exist for top doc along with any embedded
-        # if it is a changed doc, do same but only changed fields.
+        # prs = Prs(**prs_src)
+        prs = Prs(fNam='Larry', lNam='King')
+        prs.save()
+        assert prs.id
+        assert prs.dNam == 'Larry King'
 
-        #doc_tmp = docCloneToTmp(prs, PrsTmp)
-        #doc_clone = docClone(prs)
-        #doc_clone.lNam = 'Smith'
-        #doc_clone.save()
+        prs.fNam = 'Wayne'
+        prs.save()
+        assert prs.dNam == 'Wayne King'
 
-        resp = Prs.objects.get(fNam=fNam, lNam=lNam)
-        assert resp.fNam == fNam
+        resp = Prs.objects.get(pk=prs.id)
+        assert resp.fNam == prs.fNam
 
         pass
 
 
-    def test_vNam(self):
-        doc_dict = \
-        {
-          "_id" : ObjectId("50be37ed936aa21380e1a982"),
-          "_types" : ["Cnt", "Cnt.Prs"],
-          #"updated_at" : ISODate("2012-12-04T11:50:37.89Z"),
-          "lNam" : "King",
-          "_cls" : "Cnt.Prs",
-          "fNam" : "Larry",
-          "sId" : 2,
-          "emails" : [{
-              "_types" : ["Email"],
-              "_cls" : "Email",
-              "address" : "steve@apple.com"
-            }, {
-              "_types" : ["Email"],
-              "_cls" : "Email",
-              "address" : "bill@ms.com"
-            }]
-        }
-        print doc_dict
+    #def test_vNam(self):
+        #doc_dict = \
+        #{
+          #"_id" : ObjectId("50be37ed936aa21380e1a982"),
+          #"_types" : ["Cnt", "Cnt.Prs"],
+          ##"updated_at" : ISODate("2012-12-04T11:50:37.89Z"),
+          #"lNam" : "King",
+          #"_cls" : "Cnt.Prs",
+          #"fNam" : "Larry",
+          #"sId" : 2,
+          #"emails" : [{
+              #"_types" : ["Email"],
+              #"_cls" : "Email",
+              #"address" : "steve@apple.com"
+            #}, {
+              #"_types" : ["Email"],
+              #"_cls" : "Email",
+              #"address" : "bill@ms.com"
+            #}]
+        #}
+        #print doc_dict

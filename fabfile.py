@@ -13,15 +13,6 @@ env.admin_     = fab['ADMIN_USER']
 env.admin_user = fab['ADMIN_USER']
 env.password   = fab['ADMIN_PW']
 
-# TODOs
-'''
-How to restore to a previous state 
-Reload uwsgi without sudo
-How to kill all uwsgi
-pkill uwsgi
-'''
-
-
 # def deploy(push_code=False):
 def deploy(msg="No Msg"):
     #if push_code:
@@ -46,9 +37,6 @@ def update_remote():
 # def run_tests():
 #     with cd(fab['PROJECT_ROOT']):
 #         run('export PYTHONPATH=/srv/gs/api/flask_seed/:/srv/gs/api/flask_seed/venv/lib/python2.7/site-packages/ && nosetests tests') 
-
-def hello():
-    print("Hello world today!")
 
 # def r():
 #     # symlink convenience
@@ -85,15 +73,6 @@ def reload_uwsgi():
 def reload_uwsgi():
     with cd(fab['PROJECT_ROOT']):
         run('pkill -9 uwsgi')
-#     child = pexpect.spawn(pexpect_params[0])
-#     child.expect(pexpect_params[1])
-#     child.sendline(pexpect_params[2])
-#     child.expect(pexpect_params[3])
-#     child.sendline(pexpect_params[4])
-#     child.expect(pexpect_params[5])
-#     child.sendline(pexpect_params[6])
-#     child.expect(pexpect_params[7])
-#     child.sendline(pexpect_params[8])
 
 def reload_nginx_conf():
     sudo('/etc/init.d/nginx check')

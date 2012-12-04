@@ -3,9 +3,11 @@ import datetime
 from app import app
 import models
 
+
+
 def vDoc(key, val):
-    '''Recursively run any model class fields looking for fields with a vOnUpsert function'''
-    kvs = {}
+    '''Recursively traverse model class fields executing vOnUpsert functions found in doc.fields'''
+    keyvals = {}
     if type(val) == dict:
         if '_cls' in val:
             doc_class = getattr(models, val['_cls'])
@@ -14,7 +16,7 @@ def vDoc(key, val):
         for key in val.keys():
             if key in ['_cls', '_types']:
                 return val
-            kvs[key] = vDoc(key, val[key])
+            keyvals[key] = vDoc(key, val[key])
     elif type(val) == list:
         for i in range(0, len(val)):
             val[i] = vDoc(key, val[i])
@@ -22,7 +24,7 @@ def vDoc(key, val):
     else:
         return val
 
-    return kvs
+    return keyvals
 
 def handleVirtualModelFunctions(m):
     '''recursively look for fields with vOnUpsert function to handle'''
@@ -33,13 +35,23 @@ def handleVirtualModelFunctions(m):
             fields_to_process[k] = v
 
     m_data_handled = vDoc('doc', fields_to_process)
+
+    # make sure base doc is handled
     if hasattr(m, 'vOnUpsert'):
         m_data_handled = m.vOnUpsert(m_data_handled)
-    m = m.__class__(**m_data_handled)
-    return m
+
+    for field in m._fields.keys():
+        if field in m_data_handled:
+            setattr(m, field, m_data_handled[field])
+
+
+
+    # return m.__class__(**m_data_handled)
+    # return m
 
 
 def docCleanData(m_data):
+    '''Models contains some fields with keys and/or vals == None. Return dict with only value keys that also have value'''
     ks = {}
     for k, v in m_data.iteritems():
         if v and k:
@@ -70,7 +82,31 @@ class Mixin(object):
 
     sId = app.db.SequenceField()
 
-    updated_at = app.db.DateTimeField(required=True)
+    oBy       = app.db.ObjectIdField()
+    oOn = app.db.DateTimeField(required=True)
+    cBy       = app.db.ObjectIdField()
+    cOn = app.db.DateTimeField(required=True)
+    mBy       = app.db.ObjectIdField()
+    mOn = app.db.DateTimeField(required=True)
+    dOn = app.db.DateTimeField()
+    dBy = app.db.ObjectIdField()
+
+
+#class Mixin2(object):
+    #dNam = app.db.StringField()
+    #dNamS = app.db.StringField()
+    #sId = app.db.SequenceField()
+
+#class Doc(app.db.Document, Mixin2):
+    #dNam = app.db.StringField()
+    #meta           = {
+        #'collection'               : 'test',
+        #}
+    #def save(self, *args, **kwargs):
+        #now = datetime.datetime.now()
+
+        #self = handleVirtualModelFunctions(self)
+        #super(Doc, self).save(*args, **kwargs)
 
 
 class Cnt(app.db.Document, Mixin):
@@ -81,9 +117,15 @@ class Cnt(app.db.Document, Mixin):
         }
 
     def save(self, *args, **kwargs):
-        self.updated_at = datetime.datetime.now()
+        now = datetime.datetime.now()
 
-        self = handleVirtualModelFunctions(self)
+        if not self.id:
+            self.cOn = self.oOn = now
+
+        self.mOn = now
+
+
+        handleVirtualModelFunctions(self)
 
         super(Cnt, self).save(*args, **kwargs)
 
@@ -115,3 +157,6 @@ class Prs(Cnt):
     def vOnUpsert(rec):
         rec['dNam'] = rec['fNam'] + ' ' + rec['lNam']
         return rec
+
+    def save(self, *args, **kwargs):
+        super(Prs, self).save(*args, **kwargs)
