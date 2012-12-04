@@ -1,17 +1,31 @@
 Flask
 Flask-PyMongo
-Flask-Testing
-mimerender
-simplejson
-bpython
-schematics
-isodate
-jsondatetime
-rawes
-pyes
-sphinx
-pyyaml
-
--e git+git://github.com/mongodb/mongo-python-driver.git#egg=pymongo
-fabric
+Flask-DebugToolbar
+Jinja2
+WTForms
+Werkzeug
+mongoengine
+pymongo
+flask-mongoengine
 python-dateutil
+Flask-Script
+path.py
+pyyaml
+markdown2
+
+# Elastic Search
+pyes
+
+
+# deployment
+fabric
+
+# testing
+unittest2
+pytest
+pytest-pep8
+pep8
+
+# docs
+Pygments==1.4
+Sphinx==1.0.7
