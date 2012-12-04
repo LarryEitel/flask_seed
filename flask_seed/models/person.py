@@ -1,6 +1,6 @@
 import datetime
 
-from flask_seed.app import app
+from app import app
 
 class Person(app.db.Document):
     name = app.db.StringField(required=True, unique=True)

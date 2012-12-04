@@ -1,0 +1,117 @@
+import datetime
+
+from app import app
+import models
+
+def vDoc(key, val):
+    '''Recursively run any model class fields looking for fields with a vOnUpsert function'''
+    kvs = {}
+    if type(val) == dict:
+        if '_cls' in val:
+            doc_class = getattr(models, val['_cls'])
+            if hasattr(doc_class, 'vOnUpsert'):
+                val = doc_class.vOnUpsert(val)
+        for key in val.keys():
+            if key in ['_cls', '_types']:
+                return val
+            kvs[key] = vDoc(key, val[key])
+    elif type(val) == list:
+        for i in range(0, len(val)):
+            val[i] = vDoc(key, val[i])
+        return val
+    else:
+        return val
+
+    return kvs
+
+def handleVirtualModelFunctions(m):
+    '''recursively look for fields with vOnUpsert function to handle'''
+    m_data = m._data
+    fields_to_process = {}
+    for k, v in m_data.iteritems():
+        if v and k:
+            fields_to_process[k] = v
+
+    m_data_handled = vDoc('doc', fields_to_process)
+    if hasattr(m, 'vOnUpsert'):
+        m_data_handled = m.vOnUpsert(m_data_handled)
+    m = m.__class__(**m_data_handled)
+    return m
+
+
+def docCleanData(m_data):
+    ks = {}
+    for k, v in m_data.iteritems():
+        if v and k:
+            ks[k] = v
+
+    return ks
+
+class Email(app.db.EmbeddedDocument):
+    address = app.db.StringField(required=True)
+    dNam = app.db.StringField()
+
+    def __str__(self):
+        return self.address
+
+    @staticmethod
+    def vOnUpsert(rec):
+        rec['dNam'] = rec['address'] + 'test'
+        return rec
+
+
+class Mixin(object):
+    cloned_id       = app.db.ObjectIdField()
+    emails = app.db.ListField(
+        app.db.EmbeddedDocumentField(Email),
+    )
+    dNam = app.db.StringField()
+    dNamS = app.db.StringField()
+
+    sId = app.db.SequenceField()
+
+    updated_at = app.db.DateTimeField(required=True)
+
+
+class Cnt(app.db.Document, Mixin):
+    code = app.db.StringField()
+    meta           = {
+        'collection'               : 'cnts',
+        'allow_inheritance'        : True,
+        }
+
+    def save(self, *args, **kwargs):
+        self.updated_at = datetime.datetime.now()
+
+        self = handleVirtualModelFunctions(self)
+
+        super(Cnt, self).save(*args, **kwargs)
+
+
+class Cmp(Cnt):
+    symbol = app.db.StringField()
+
+class Prs(Cnt):
+    # namePrefix
+    prefix    = app.db.StringField()
+
+    # givenName
+    fNam      = app.db.StringField()
+
+    # additionalName
+    fNam2     = app.db.StringField()
+
+    # givenName
+    lNam      = app.db.StringField()
+    lNam2     = app.db.StringField()
+
+    # nameSuffix
+    suffix    = app.db.StringField()
+    gen       = app.db.StringField()
+    rBy       = app.db.ObjectIdField()
+
+
+    @staticmethod
+    def vOnUpsert(rec):
+        rec['dNam'] = rec['fNam'] + ' ' + rec['lNam']
+        return rec

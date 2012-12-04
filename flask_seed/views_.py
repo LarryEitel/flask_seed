@@ -17,10 +17,10 @@ from flask import (
     send_from_directory,
 )
 
-from flask_seed.app import app
-from flask_seed.models import Q, Person
-import flask_seed.util
-from flask_seed.util import (
+from app import app
+from models import Q, Person
+import util
+from util import (
     slugify,
     make_start_date,
     make_end_date,

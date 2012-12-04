@@ -9,11 +9,11 @@ from flask import (
     abort,
     send_from_directory,
 )
-from flask_seed.app import app
+from app import app
 
 import datetime
 from flask_seed import controllers
-from flask_seed.util import (
+from util import (
     slugify,
     make_start_date,
     make_end_date,

@@ -1,23 +1,27 @@
-#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+try:
+    import unittest2 as unittest
+except ImportError:
+    import unittest  # NOQA
 
 import datetime
 import random
 import os
 
-import unittest2
 
 
-class BaseTestCase(unittest2.TestCase):
+class BaseTestCase(unittest.TestCase):
     def setUp(self):
         if os.environ.get('FLASK_SEED_SETTINGS'):
             os.environ['FLASK_SEED_SETTINGS'] = ''
 
-        from flask_seed import default_settings
+        import default_settings
         default_settings.TEMPLATE_DEBUG = True
-        from flask_seed.app import app
-        from flask_seed.util import now
+        from app import app
+        from util import now
 
-        app.config.from_object('flask_seed.default_settings')
+        app.config.from_object('default_settings')
+        app.config['MONGODB_DB'] = 'flask_seed_unittest'
         app.config['DEBUG'] = True
         app.config['TESTING'] = True
 
@@ -28,22 +32,31 @@ class BaseTestCase(unittest2.TestCase):
         self.used_keys = []
         self.now = now
 
-        super(BaseTestCase, self).setUp()
-
-class BaseMongoTestCase(BaseTestCase):
+class BaseMongoTestCase(unittest.TestCase):
     def setUp(self):
-        app = self.app
+        if os.environ.get('FLASK_SEED_SETTINGS'):
+            os.environ['FLASK_SEED_SETTINGS'] = ''
+
+        import default_settings
+        default_settings.TEMPLATE_DEBUG = True
+        from app import app
         from flask.ext.mongoengine import MongoEngine
-        delattr(app, 'db')
-        from mongoengine.connection import connect, disconnect
-        disconnect()
+        from util import now
 
+        app.config.from_object('default_settings')
         app.config['MONGODB_DB'] = 'flask_seed_unittest'
-        connect(app.config['MONGODB_DB'])
+        app.config['DEBUG'] = True
+        app.config['TESTING'] = True
         app.db = MongoEngine(app)
-        self.app = app
 
-        super(BaseMongoTestCase, self).setUp()
+        self._flush_db()
+
+        self.config = app.config
+        self.app = app.test_client()
+        self.flask_app = app
+
+        self.used_keys = []
+
 
     def tearDown(self):
         #self._flush_db()
@@ -67,11 +80,11 @@ class BaseMongoTestCase(BaseTestCase):
         return self._get_target_class()(*args, **kwargs)
 
     def _get_card_class(self):
-        from flask_seed.models import Kard
+        from models import Kard
         return Kard
 
     def _get_record_class(self):
-        from flask_seed.models import DailyRecord
+        from models import DailyRecord
         return DailyRecord
 
     def _make_unique_key(self):

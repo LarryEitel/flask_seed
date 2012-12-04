@@ -1,6 +1,6 @@
 import datetime
 from copy import deepcopy
-from flask_seed.models import Person
+from models import Person
 from tests.core import BaseTestCase, BaseMongoTestCase
 
 class GenericTests(BaseTestCase):

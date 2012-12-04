@@ -1,3 +1,4 @@
 from mongoengine.queryset import Q
 
-from flask_seed.models.person import Person
+from models.person import Person
+from doc import *

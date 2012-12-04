@@ -1,4 +1,4 @@
-from flask_seed.models import Person
+from models import Person
 
 def getPerson():
     name = "Larry"

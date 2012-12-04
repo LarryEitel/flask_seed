@@ -1,6 +1,6 @@
 import sys
-from flask_seed.app import app
-from flask_seed.apps import web
+from app import app
+from apps import web
 
 def run():
     app.host = sys.argv['-h'] if '-h' in sys.argv else '127.0.0.1'

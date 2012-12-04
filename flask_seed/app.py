@@ -7,7 +7,7 @@ from flask.ext.mongoengine import MongoEngine
 from jinja2 import ModuleLoader
 from flask_debugtoolbar import DebugToolbarExtension
 
-from flask_seed.util import (
+from util import (
     slugify,
     timesince,
     timeuntil,
@@ -20,7 +20,7 @@ from flask_seed.util import (
 
 def get_app():
     app = Flask('flask_seed')
-    app.config.from_object('flask_seed.default_settings')
+    app.config.from_object('default_settings')
     if os.getenv('FLASK_SEED_SETTINGS', None):
         app.config.from_envvar('FLASK_SEED_SETTINGS')
 
@@ -28,7 +28,7 @@ def get_app():
 
     app.db = MongoEngine(app)
 
-    app.jinja_env.add_extension('flask_seed.util.Markdown2Extension')
+    app.jinja_env.add_extension('util.Markdown2Extension')
     app.jinja_env.filters['slugify'] = slugify
     app.jinja_env.filters['timesince'] = timesince
     app.jinja_env.filters['timeuntil'] = timeuntil
