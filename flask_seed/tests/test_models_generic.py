@@ -50,27 +50,12 @@ class GenericMongoTests(BaseMongoTestCase):
         from models import Email, Prs
 
         cnts = myyaml.pyObj(self.tests_data_yaml_dir + 'cnts.yaml')
-        prs_larry_king = cnts['larry_king']
 
-        fNam = 'Larry'
-        lNam = 'King'
+        for doc_dict in cnts.itervalues():
+            doc = Prs(**doc_dict)
+            doc.save()
+            assert doc.id
 
-        prs_src = {'fNam': fNam, 'lNam': lNam, 'emails': [{
-            "_types" : ["Email"],
-            "_cls" : "Email",
-            "typ" : "work",
-            "prim" : True,
-            "address" : "steve@apple.com"
-        },{
-            "_types" : ["Email"],
-            "_cls" : "Email",
-            "typ" : "work",
-            "address" : "bill@ms.com"
-        }]}
-        # prs = Prs(**prs_src)
-        prs = Prs(**prs_larry_king)
-        prs.save()
-        assert prs.id
         assert prs.dNam == 'Larry King'
 
         prs.fNam = 'Wayne'

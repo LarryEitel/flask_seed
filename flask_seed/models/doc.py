@@ -6,13 +6,13 @@ import models
 
 
 def vDoc(key, val):
-    '''Recursively traverse model class fields executing vOnUpsert functions found in doc.fields'''
+    '''Recursively traverse model class fields executing vOnUpSert functions found in doc.fields'''
     keyvals = {}
     if type(val) == dict:
         if '_cls' in val:
             doc_class = getattr(models, val['_cls'])
-            if hasattr(doc_class, 'vOnUpsert'):
-                val = doc_class.vOnUpsert(val)
+            if hasattr(doc_class, 'vOnUpSert'):
+                val = doc_class.vOnUpSert(val)
         for key in val.keys():
             if key in ['_cls', '_types']:
                 return val
@@ -27,7 +27,7 @@ def vDoc(key, val):
     return keyvals
 
 def handleVirtualModelFunctions(m):
-    '''recursively look for fields with vOnUpsert function to handle'''
+    '''recursively look for fields with vOnUpSert function to handle'''
     m_data = m._data
     fields_to_process = {}
     for k, v in m_data.iteritems():
@@ -37,8 +37,8 @@ def handleVirtualModelFunctions(m):
     m_data_handled = vDoc('doc', fields_to_process)
 
     # make sure base doc is handled
-    if hasattr(m, 'vOnUpsert'):
-        m_data_handled = m.vOnUpsert(m_data_handled)
+    if hasattr(m, 'vOnUpSert'):
+        m_data_handled = m.vOnUpSert(m_data_handled)
 
     for field in m._fields.keys():
         if field in m_data_handled:
@@ -65,13 +65,14 @@ class Email(app.db.EmbeddedDocument):
     prim = app.db.BooleanField()
     dNam = app.db.StringField()
     #eId = app.db.SequenceField(primary_key=True, required= True)
+    eId = app.db.IntField(required= True)
     w = app.db.FloatField()
 
     def __str__(self):
         return self.address
 
     @staticmethod
-    def vOnUpsert(rec):
+    def vOnUpSert(rec):
         rec['dNam'] = rec['address'] + 'test'
         return rec
 
@@ -83,6 +84,7 @@ class Mixin(object):
     )
     dNam = app.db.StringField()
     dNamS = app.db.StringField()
+    slug = app.db.StringField()
 
     sId = app.db.SequenceField()
 
@@ -158,8 +160,12 @@ class Prs(Cnt):
 
 
     @staticmethod
-    def vOnUpsert(rec):
+    def vOnUpSert(rec):
         rec['dNam'] = rec['fNam'] + ' ' + rec['lNam']
+        if not 'dNamS' in rec or not rec['dNamS']:
+            rec['dNamS'] = rec['dNam'].lower().replace(' ', '_')
+        if not 'slug' in rec or not rec['slug']:
+            rec['slug'] = rec['dNamS']
         return rec
 
     def save(self, *args, **kwargs):
