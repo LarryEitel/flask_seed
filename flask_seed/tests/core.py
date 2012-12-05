@@ -41,7 +41,6 @@ class BaseMongoTestCase(unittest.TestCase):
         import default_settings
         default_settings.TEMPLATE_DEBUG = True
 
-        self.tests_data_yaml_dir = 'data/yaml/'
 
         from app import app
         from flask.ext.mongoengine import MongoEngine
@@ -51,6 +50,9 @@ class BaseMongoTestCase(unittest.TestCase):
         app.config['MONGODB_DB'] = 'flask_seed_unittest'
         app.config['DEBUG'] = True
         app.config['TESTING'] = True
+
+        self.tests_data_yaml_dir = app.config['HOME_PATH'] + 'tests/data/yaml/'
+
         app.db = MongoEngine(app)
 
         self._flush_db()

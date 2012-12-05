@@ -1,0 +1,9 @@
+# http://yaml-online-parser.appspot.com
+# Attribute Types
+# [action, _cls, slug[, count]]
+test:
+  - [add, Prs, larry_stooge]
+  - [add, Prs, moe_stooge]
+one:
+  - [add, Prs, larry_stooge]
+  - [add, Prs, moe_stooge]

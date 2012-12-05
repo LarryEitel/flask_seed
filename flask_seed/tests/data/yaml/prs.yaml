@@ -1,0 +1,36 @@
+# http://yaml-online-parser.appspot.com
+# Attribute Types
+larry_stooge:
+  _cls: Prs
+  slug  : larry_stooge
+  fNam  : Larry
+  lNam  : Stooge
+  emails: 
+    - _cls   : Email
+      _types : [Email]
+      eId    : 1
+      typ    : work
+      address: bill@ms.com      
+      prim   : true  
+    - _cls   : Email
+      _types : [Email]
+      eId    : 2
+      typ    : work
+      address: steve@apple.com      
+moe_stooge:
+  _cls: Prs
+  slug  : moe_stooge
+  fNam  : Moe
+  lNam  : Stooge
+  emails: 
+    - _cls   : Email
+      _types : [Email]
+      eId    : 1
+      typ    : work
+      address: bill@ms.com      
+      prim   : true  
+    - _cls   : Email
+      _types : [Email]
+      eId    : 2
+      typ    : work
+      address: steve@apple.com
