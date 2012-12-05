@@ -46,10 +46,6 @@ def handleVirtualModelFunctions(m):
 
 
 
-    # return m.__class__(**m_data_handled)
-    # return m
-
-
 def docCleanData(m_data):
     '''Models contains some fields with keys and/or vals == None. Return dict with only value keys that also have value'''
     ks = {}
@@ -60,20 +56,25 @@ def docCleanData(m_data):
     return ks
 
 class Email(app.db.EmbeddedDocument):
-    typ = app.db.StringField(required=True)
-    address = app.db.StringField(required=True)
-    prim = app.db.BooleanField()
-    dNam = app.db.StringField()
-    #eId = app.db.SequenceField(primary_key=True, required= True)
-    eId = app.db.IntField(required= True)
-    w = app.db.FloatField()
+    typ     = app.db.StringField(required= True)
+    address = app.db.StringField(required= True)
+    prim    = app.db.BooleanField()
+    dNam    = app.db.StringField()
+    #eId    = app.db.SequenceField(primary_key=True, required= True)
+    eId     = app.db.IntField(required= True)
+    w       = app.db.FloatField()
 
     def __str__(self):
-        return self.address
+        s = ('[' + str(self.eId) + '] ') if self.eId else ''
+        s += (self.typ + ': ') if self.typ else ''
+        s += self.address
+        return s
 
     @staticmethod
     def vOnUpSert(rec):
-        rec['dNam'] = rec['address'] + 'test'
+        dNam = (rec['typ'] + ': ') if 'typ' in rec and rec['typ'] else ''
+        dNam += rec['address']
+        rec['dNam'] = dNam
         return rec
 
 
@@ -97,24 +98,6 @@ class Mixin(object):
     dOn = app.db.DateTimeField()
     dBy = app.db.ObjectIdField()
 
-
-#class Mixin2(object):
-    #dNam = app.db.StringField()
-    #dNamS = app.db.StringField()
-    #sId = app.db.SequenceField()
-
-#class Doc(app.db.Document, Mixin2):
-    #dNam = app.db.StringField()
-    #meta           = {
-        #'collection'               : 'test',
-        #}
-    #def save(self, *args, **kwargs):
-        #now = datetime.datetime.now()
-
-        #self = handleVirtualModelFunctions(self)
-        #super(Doc, self).save(*args, **kwargs)
-
-
 class Cnt(app.db.Document, Mixin):
     code = app.db.StringField()
     meta           = {
@@ -129,7 +112,6 @@ class Cnt(app.db.Document, Mixin):
             self.cOn = self.oOn = now
 
         self.mOn = now
-
 
         handleVirtualModelFunctions(self)
 
@@ -170,3 +152,33 @@ class Prs(Cnt):
 
     def save(self, *args, **kwargs):
         super(Prs, self).save(*args, **kwargs)
+
+#def docCleanData(m_data):
+    #ks = {}
+    #for k, v in m_data.iteritems():
+        #if v and k:
+            #ks[k] = v
+
+    #return ks
+
+#def docCloneToTmp(m, tmpClass):
+    #m_dict = m._data
+    #ks = {}
+    #for k, v in m_dict.iteritems():
+        #if v and k:
+            #ks[k] = v
+
+    #ks['cloned_id'] = m.id
+    #del ks['sId']
+    #return tmpClass(**ks)
+
+#def docClone(m):
+    #m_dict = m._data
+    #ks = {}
+    #for k, v in m_dict.iteritems():
+        #if v and k:
+            #ks[k] = v
+
+    #ks['cloned_id'] = m.id
+    #del ks['sId']
+    #return m.__class__(**ks)

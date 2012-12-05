@@ -7,6 +7,7 @@ except ImportError:
 import datetime
 import random
 import os
+import usecase
 import globals
 
 
@@ -52,7 +53,7 @@ class BaseMongoTestCase(unittest.TestCase):
         app.config['TESTING'] = True
 
         self.tests_data_yaml_dir = app.config['HOME_PATH'] + 'tests/data/yaml/'
-
+        self.usecase = usecase.UseCase(self.tests_data_yaml_dir)
         app.db = MongoEngine(app)
 
         self._flush_db()

@@ -9,14 +9,17 @@ from copy import deepcopy
 from core import BaseTestCase, BaseMongoTestCase
 from bson import ObjectId
 from utils import myyaml
-import usecase
 import models
 
 class UseCasesTests(BaseMongoTestCase):
 
     def test_run(self):
-    	cmds = usecase.run(self.tests_data_yaml_dir, 'usecases', 'test')
-	assert len(cmds) == 2
+        ucs = self.usecase
+        ucs.load('usecases')
+        cmds = ucs.run_all('test')
+        assert len(cmds) == 2
+        cmds = ucs.run(['add', 'Prs', 'noemail'])
+        assert len(cmds) == 1
 
 
 if __name__ == "__main__":

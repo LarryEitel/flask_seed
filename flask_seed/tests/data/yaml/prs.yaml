@@ -33,4 +33,9 @@ moe_stooge:
       _types : [Email]
       eId    : 2
       typ    : work
-      address: steve@apple.com
+      address: steve@apple.com     
+noemail:
+  _cls: Prs
+  slug  : noemail
+  fNam  : Moe
+  lNam  : Stooge    
