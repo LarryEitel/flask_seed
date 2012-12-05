@@ -7,6 +7,7 @@ except ImportError:
 import datetime
 import random
 import os
+import globals
 
 
 
@@ -39,6 +40,9 @@ class BaseMongoTestCase(unittest.TestCase):
 
         import default_settings
         default_settings.TEMPLATE_DEBUG = True
+
+        self.tests_data_yaml_dir = 'data/yaml/'
+
         from app import app
         from flask.ext.mongoengine import MongoEngine
         from util import now
@@ -53,8 +57,10 @@ class BaseMongoTestCase(unittest.TestCase):
 
         self.config = app.config
         self.app = app.test_client()
-        self.flask_app = app
+        # self.flask_app = app
 
+        self.g = globals.load()
+        self.g['usr']         = {"OID": "50468de92558713d84b03fd7", "at": (-84.163063, 9.980516)}
         self.used_keys = []
 
 

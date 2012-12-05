@@ -1,8 +1,8 @@
 import datetime
 from copy import deepcopy
-
 from core import BaseTestCase, BaseMongoTestCase
 from bson import ObjectId
+from utils import myyaml
 
 def docCleanData(m_data):
     ks = {}
@@ -48,16 +48,27 @@ class GenericMongoTests(BaseMongoTestCase):
 
     def test_prs(self):
         from models import Email, Prs
+
+        cnts = myyaml.pyObj(self.tests_data_yaml_dir + 'cnts.yaml')
+        prs_larry_king = cnts['larry_king']
+
         fNam = 'Larry'
         lNam = 'King'
 
         prs_src = {'fNam': fNam, 'lNam': lNam, 'emails': [{
             "_types" : ["Email"],
             "_cls" : "Email",
+            "typ" : "work",
+            "prim" : True,
             "address" : "steve@apple.com"
+        },{
+            "_types" : ["Email"],
+            "_cls" : "Email",
+            "typ" : "work",
+            "address" : "bill@ms.com"
         }]}
         # prs = Prs(**prs_src)
-        prs = Prs(fNam='Larry', lNam='King')
+        prs = Prs(**prs_larry_king)
         prs.save()
         assert prs.id
         assert prs.dNam == 'Larry King'

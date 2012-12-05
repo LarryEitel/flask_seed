@@ -60,8 +60,12 @@ def docCleanData(m_data):
     return ks
 
 class Email(app.db.EmbeddedDocument):
+    typ = app.db.StringField(required=True)
     address = app.db.StringField(required=True)
+    prim = app.db.BooleanField()
     dNam = app.db.StringField()
+    #eId = app.db.SequenceField(primary_key=True, required= True)
+    w = app.db.FloatField()
 
     def __str__(self):
         return self.address

@@ -7,6 +7,7 @@ from flask.ext.mongoengine import MongoEngine
 from jinja2 import ModuleLoader
 from flask_debugtoolbar import DebugToolbarExtension
 
+
 from util import (
     slugify,
     timesince,
@@ -26,6 +27,7 @@ def get_app():
 
     app.secret_key = app.config['SECRET_KEY']
 
+    # app.g  = globals.load()
     app.db = MongoEngine(app)
 
     app.jinja_env.add_extension('util.Markdown2Extension')
