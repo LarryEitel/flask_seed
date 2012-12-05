@@ -31,7 +31,9 @@ class ControllersGenericPostTests(BaseMongoTestCase):
         resp = fn.post(**{'docs': multiple_docs})
         assert resp['status'] == 200
         assert len(resp['response']['docs']) == len(multiple_docs)
-        pass
+
+        # test validation including embedded docs!
+        # have a conflict at the moment cause couldn't trap mongoengine validation on embedded docs
 
 if __name__ == "__main__":
     unittest.main()

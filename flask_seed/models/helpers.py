@@ -1,6 +1,4 @@
 import datetime
-
-#from app import app
 import models
 
 doc_errors = []
