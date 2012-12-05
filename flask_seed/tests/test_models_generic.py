@@ -4,11 +4,7 @@ try:
 except ImportError:
     import unittest  # NOQA
 
-import datetime
-from copy import deepcopy
-from core import BaseTestCase, BaseMongoTestCase
-from bson import ObjectId
-from utils import myyaml
+from core import BaseMongoTestCase
 
 class GenericModelsTests(BaseMongoTestCase):
     def setUp(self):

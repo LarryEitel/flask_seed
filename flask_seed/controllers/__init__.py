@@ -1,1 +1,1 @@
-# from person import *
+from generic_post import *

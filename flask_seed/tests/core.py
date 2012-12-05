@@ -64,6 +64,7 @@ class BaseMongoTestCase(unittest.TestCase):
 
         self.g = globals.load()
         self.g['usr']         = {"OID": "50468de92558713d84b03fd7", "at": (-84.163063, 9.980516)}
+        self.g['db']         = app.db
         self.used_keys = []
 
 
