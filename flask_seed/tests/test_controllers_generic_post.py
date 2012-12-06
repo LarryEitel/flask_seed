@@ -32,6 +32,7 @@ class ControllersGenericPostTests(BaseMongoTestCase):
         assert resp['status'] == 200
         assert len(resp['response']['docs']) == len(multiple_docs)
 
+        x=0
         # test validation including embedded docs!
 
 if __name__ == "__main__":

@@ -1,9 +1,8 @@
 import datetime
 import models
 
-def vDoc(key, val, doc_errors):
-    '''Recursively traverse model class fields executing vOnUpSert functions found in doc.fields'''
-    # global doc_errors
+def myValidate(key, val, doc_errors):
+    '''Recursively traverse model class fields executing validate on any docs/embedded docs'''
     keyvals = {}
     if type(val) == dict:
         doc_class = getattr(models, val['_cls']) if '_cls' in val else None
@@ -16,16 +15,37 @@ def vDoc(key, val, doc_errors):
                     error['eId'] = val['eId']
                 doc_errors.append(error)
 
+        for key in val.keys():
+            if key in ['_cls', '_types']:
+                keyvals[key] = val[key]
+                continue
+            keyvals[key] = myValidate(key, val[key], doc_errors)
+    elif type(val) == list:
+        for i in range(0, len(val)):
+            val[i] = myValidate(key, val[i], doc_errors)
+        return val
+    else:
+        return val
+
+    return keyvals
+
+def vOnUpSert(key, val, doc_errors):
+    '''Recursively traverse model class fields executing vOnUpSert functions found in doc.fields'''
+    keyvals = {}
+    if type(val) == dict:
+        doc_class = getattr(models, val['_cls']) if '_cls' in val else None
+        if doc_class:
             if '_cls' in val:
                 if hasattr(doc_class, 'vOnUpSert'):
                     val = doc_class.vOnUpSert(val)
         for key in val.keys():
             if key in ['_cls', '_types']:
-                return val
-            keyvals[key] = vDoc(key, val[key], doc_errors)
+                keyvals[key] = val[key]
+                continue
+            keyvals[key] = vOnUpSert(key, val[key], doc_errors)
     elif type(val) == list:
         for i in range(0, len(val)):
-            val[i] = vDoc(key, val[i], doc_errors)
+            val[i] = vOnUpSert(key, val[i], doc_errors)
         return val
     else:
         return val
@@ -34,34 +54,27 @@ def vDoc(key, val, doc_errors):
 
 def handleVirtualModelFunctions(m):
     '''recursively look for fields with vOnUpSert function to handle'''
-    doc_errors = []
+
     m_data = m._data
     fields_to_process = {}
     for k, v in m_data.iteritems():
         if v and k:
             fields_to_process[k] = v
 
-    m_data_handled = vDoc('doc', fields_to_process, doc_errors)
+    fields_to_process['_cls'] = m._cls
+    fields_to_process['_types'] = [m._cls]
 
-    doc = m.__class__(**m_data_handled)
-    errors = doc.validate()
-    # errors = m.myValidate(m_data_handled)
-    if errors:
-        error = {'_cls':m._cls, 'errors': errors}
-        doc_errors.append(error)
-
-    #if hasattr(m.__class__, 'myValidate'):
-        #errors = m.myValidate(m_data_handled)
-        #if errors:
-            #error = {'_cls':m._cls, 'errors': errors}
-            #doc_errors.append(error)
+    doc_errors = []
+    myValidate('doc', fields_to_process, doc_errors)
 
     if doc_errors:
         return doc_errors
 
-    # make sure base doc is handled
-    if hasattr(m, 'vOnUpSert'):
-        m_data_handled = m.vOnUpSert(m_data_handled)
+    doc_errors = []
+    m_data_handled = vOnUpSert('doc', fields_to_process, doc_errors)
+
+    if doc_errors:
+        return doc_errors
 
     for field in m._fields.keys():
         if field in m_data_handled:

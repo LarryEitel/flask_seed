@@ -7,10 +7,6 @@ import helpers
 
 class Cnt(MyDocument, Mixin):
     code = app.db.StringField()
-    meta           = {
-        'collection'               : 'cnts',
-        'allow_inheritance'        : True,
-        }
 
     def save(self, *args, **kwargs):
         now = datetime.datetime.now()
@@ -22,6 +18,7 @@ class Cnt(MyDocument, Mixin):
 
         errors = helpers.handleVirtualModelFunctions(self)
 
+        self._meta['collection'] = 'cnts'
         if type(errors) == list:
             self._data['myErrors'] = errors
         else:
