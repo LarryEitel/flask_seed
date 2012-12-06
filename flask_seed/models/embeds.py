@@ -4,7 +4,7 @@ from app import app
 import models
 
 class Email(app.db.EmbeddedDocument):
-    typ     = app.db.StringField()
+    typ     = app.db.StringField(required= True)
     address = app.db.StringField()
     prim    = app.db.BooleanField()
     dNam    = app.db.StringField()

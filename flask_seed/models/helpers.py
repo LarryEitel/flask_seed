@@ -9,13 +9,21 @@ def vDoc(key, val):
     if type(val) == dict:
         doc_class = getattr(models, val['_cls']) if '_cls' in val else None
         if doc_class:
-            if hasattr(doc_class, 'myValidate'):
-                errors = doc_class.myValidate(val)
-                if errors:
-                    error = {'fld':key, '_cls': val['_cls'], 'errors': errors}
-                    if 'eId' in val and val['eId']:
-                        error['eId'] = val['eId']
-                    doc_errors.append(error)
+            doc = doc_class(**val)
+            errors = doc.validate()
+            if errors:
+                error = {'fld':key, '_cls': val['_cls'], 'errors': errors}
+                if 'eId' in val and val['eId']:
+                    error['eId'] = val['eId']
+                doc_errors.append(error)
+
+            #if hasattr(doc_class, 'myValidate'):
+                #errors = doc_class.myValidate(val)
+                #if errors:
+                    #error = {'fld':key, '_cls': val['_cls'], 'errors': errors}
+                    #if 'eId' in val and val['eId']:
+                        #error['eId'] = val['eId']
+                    #doc_errors.append(error)
             if '_cls' in val:
                 if hasattr(doc_class, 'vOnUpSert'):
                     val = doc_class.vOnUpSert(val)
@@ -44,11 +52,18 @@ def handleVirtualModelFunctions(m):
 
     m_data_handled = vDoc('doc', fields_to_process)
 
-    if hasattr(m.__class__, 'myValidate'):
-        errors = m.myValidate(m_data_handled)
-        if errors:
-            error = {'_cls':m._cls, 'errors': errors}
-            doc_errors.append(error)
+    doc = m.__class__(**m_data_handled)
+    errors = doc.validate()
+    # errors = m.myValidate(m_data_handled)
+    if errors:
+        error = {'_cls':m._cls, 'errors': errors}
+        doc_errors.append(error)
+
+    #if hasattr(m.__class__, 'myValidate'):
+        #errors = m.myValidate(m_data_handled)
+        #if errors:
+            #error = {'_cls':m._cls, 'errors': errors}
+            #doc_errors.append(error)
 
     if doc_errors:
         return doc_errors
