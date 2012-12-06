@@ -33,7 +33,6 @@ class ControllersGenericPostTests(BaseMongoTestCase):
         assert len(resp['response']['docs']) == len(multiple_docs)
 
         # test validation including embedded docs!
-        # have a conflict at the moment cause couldn't trap mongoengine validation on embedded docs
 
 if __name__ == "__main__":
     unittest.main()
