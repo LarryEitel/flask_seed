@@ -4,7 +4,6 @@ from app import app
 import models
 from models import MyEmbeddedDocument
 
-# class Email(app.db.EmbeddedDocument):
 class Email(MyEmbeddedDocument):
     typ     = app.db.StringField(required= True)
     address = app.db.StringField()
@@ -26,14 +25,6 @@ class Email(MyEmbeddedDocument):
         dNam += rec['address'] if 'address' in rec and rec['address'] else ''
         rec['dNam'] = dNam
         return rec
-
-    @staticmethod
-    def myValidate(rec):
-        errors = {}
-        fld = 'typ'
-        if not fld in rec or not rec[fld]:
-            errors[fld] = 'Missing'
-        return errors
 
 class Mixin(object):
     cloned_id       = app.db.ObjectIdField()

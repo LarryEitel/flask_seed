@@ -21,6 +21,7 @@ class Cnt(MyDocument, Mixin):
         self.mOn = now
 
         errors = helpers.handleVirtualModelFunctions(self)
+
         if type(errors) == list:
             self._data['myErrors'] = errors
         else:
@@ -48,14 +49,6 @@ class Prs(Cnt):
     suffix    = app.db.StringField()
     gen       = app.db.StringField()
     rBy       = app.db.ObjectIdField()
-
-
-    @staticmethod
-    def myValidate(rec):
-        errors = {}
-        if not 'fNam' in rec and not 'lNam' in rec:
-            errors['name'] = 'Must have either a First or Last Name'
-        return errors
 
     @staticmethod
     def vOnUpSert(rec):
