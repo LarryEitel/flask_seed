@@ -2,8 +2,10 @@ import datetime
 
 from app import app
 import models
+from models import MyEmbeddedDocument
 
-class Email(app.db.EmbeddedDocument):
+# class Email(app.db.EmbeddedDocument):
+class Email(MyEmbeddedDocument):
     typ     = app.db.StringField(required= True)
     address = app.db.StringField()
     prim    = app.db.BooleanField()

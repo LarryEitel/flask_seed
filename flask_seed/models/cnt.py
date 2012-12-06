@@ -2,11 +2,10 @@ import datetime
 
 from app import app
 import models
-from models import Mixin, Email
+from models import Mixin, Email, MyDocument
 import helpers
 
-
-class Cnt(app.db.Document, Mixin):
+class Cnt(MyDocument, Mixin):
     code = app.db.StringField()
     meta           = {
         'collection'               : 'cnts',
