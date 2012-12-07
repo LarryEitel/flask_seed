@@ -63,7 +63,7 @@ class GenericPost(object):
         if post_errors:
             response['total_invalid'] = len(post_errors)
             response['errors']        = post_errors
-            status                    = 400
+            status                    = 500
         else:
             response['total_invalid'] = 0
 

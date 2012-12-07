@@ -58,7 +58,24 @@ moe_stooge:
       _types : [Email]
       eId    : 2
       typ    : work
-      address: steve@apple.com     
+      address: steve@apple.com   
+moe_stooge_email_address_missing:
+  _cls: Prs
+  slug  : moe_stooge
+  fNam  : Moe
+  lNam  : Stooge
+  emails: 
+    - _cls   : Email
+      _types : [Email]
+      eId    : 1
+      typ    : work
+      address: bill@ms.com      
+      prim   : true  
+    - _cls   : Email
+      _types : [Email]
+      eId    : 2
+      typ    : work
+      address:   
 noemail:
   _cls: Prs
   slug  : noemail

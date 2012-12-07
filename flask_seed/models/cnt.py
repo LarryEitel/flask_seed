@@ -47,6 +47,7 @@ class Prs(Cnt):
     gen       = app.db.StringField()
     rBy       = app.db.ObjectIdField()
 
+
     @staticmethod
     def vOnUpSert(d):
         errors = []

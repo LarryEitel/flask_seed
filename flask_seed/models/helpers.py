@@ -23,10 +23,8 @@ def recurseVOnUpSert(doc_class, key, val, attrPath, doc_errors):
                     error['eId'] = val['eId']
                 doc_errors.append(error)
 
-def recurseDoc(key, val, recurseFn, objPath, doc_errors):
+def recurseDoc(key, val, recurseFn, attrPath, doc_errors):
     '''Recursively traverse model class fields executing validate on any docs/embedded docs'''
-    attrPath = objPath
-    # attrPath.append(key)
     keyvals = {}
     if type(val) == dict:
         doc_class = getattr(models, val['_cls']) if '_cls' in val else None
@@ -34,7 +32,6 @@ def recurseDoc(key, val, recurseFn, objPath, doc_errors):
             # this enables using same recursive funct to execute something on any docs/embedded docs
             recurseFn(doc_class, key, val, attrPath, doc_errors)
         for key in val.keys():
-            # if not type(val[key]) == dict or key in ['_cls', '_types']:
             if key in ['_cls', '_types']:
                 keyvals[key] = val[key]
                 continue
@@ -43,13 +40,10 @@ def recurseDoc(key, val, recurseFn, objPath, doc_errors):
         for i in range(len(val)):
             thisId = str(val[i]['eId'] if 'eId' in val[i] and val[i]['eId'] else i)
             val[i] = recurseDoc(key, val[i], recurseFn, attrPath + [thisId], doc_errors)
-        # attrPath.pop()
         return val
     else:
-        # attrPath.pop()
         return val
 
-    # attrPath.pop()
     return keyvals
 
 def recurseValidateAndVOnUpSert(m):
