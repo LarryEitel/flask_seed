@@ -2,13 +2,16 @@ import datetime
 
 from app import app
 import models
-from models import MyEmbeddedDocument
+from models import MyEmbedDoc
+from models.myfields import MyStringField, MyEmailField
 
-class Email(MyEmbeddedDocument):
-    typ     = app.db.StringField(required= True)
-    address = app.db.StringField()
+class Email(MyEmbedDoc):
+    typ     = MyStringField(required= True)
+    #address = app.db.EmailField(required= True)
+    address = MyEmailField(required= True)
     prim    = app.db.BooleanField()
     dNam    = app.db.StringField()
+    dNamS   = app.db.StringField()
     #eId    = app.db.SequenceField(primary_key=True, required= True)
     eId     = app.db.IntField()
     w       = app.db.FloatField()
@@ -20,11 +23,13 @@ class Email(MyEmbeddedDocument):
         return s
 
     @staticmethod
-    def vOnUpSert(rec):
-        dNam = (rec['typ'] + ': ') if 'typ' in rec and rec['typ'] else ''
-        dNam += rec['address'] if 'address' in rec and rec['address'] else ''
-        rec['dNam'] = dNam
-        return rec
+    def vOnUpSert(d):
+        errors = []
+        dNam = (d['typ'] + ': ') if 'typ' in d and d['typ'] else ''
+        dNam += d['address'].lower() if 'address' in d and d['address'] else ''
+        d['dNam'] = dNam
+        d['dNamS'] = d['address'].lower()
+        return {'doc_dict': d, 'errors': errors}
 
 class Mixin(object):
     cloned_id       = app.db.ObjectIdField()

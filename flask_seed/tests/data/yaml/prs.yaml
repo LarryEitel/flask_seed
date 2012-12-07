@@ -16,7 +16,12 @@ larry_stooge:
       _types : [Email]
       eId    : 2
       typ    : work
-      address: steve@apple.com      
+      address: steve@apple.com  
+    - _cls   : Email
+      _types : [Email]
+      eId    : 3
+      typ    : work
+      address: sue@apple.com      
 moe_stooge:
   _cls: Prs
   slug  : moe_stooge
