@@ -21,7 +21,27 @@ larry_stooge:
       _types : [Email]
       eId    : 3
       typ    : work
-      address: sue@apple.com      
+      address: sue@apple.com  
+      notes: 
+        - _cls   : Note
+          _types : [Note]
+          eId    : 1
+          typ    : work
+          title  : a title  
+          body   : Now is the time  
+          tels: 
+            - _cls   : Tel
+              _types : [Tel]
+              eId    : 1
+              typ    : work
+              text   : 858 123-1234 
+  notes: 
+    - _cls   : Note
+      _types : [Note]
+      eId    : 1
+      typ    : work
+      title  : this is a test      
+      body   : Now is the time  
 moe_stooge:
   _cls: Prs
   slug  : moe_stooge

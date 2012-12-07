@@ -2,7 +2,7 @@ import datetime
 
 from app import app
 import models
-from models import Mixin, Email, MyDoc
+from models import Mixin, Email, Note, MyDoc
 import helpers
 
 class Cnt(MyDoc, Mixin):
